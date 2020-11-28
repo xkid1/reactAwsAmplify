@@ -1,0 +1,26 @@
+.active {
+	color: #fff;
+	background-color: #0062cc;
+	border-color: #005cbf;
+}
+.butItem {
+	padding: 10px;
+}
+.cartItem {
+	padding: 10px;
+}
+.itemsToAdd {
+	cursor: pointer;
+	border: 1px solid;
+	margin-top: 20px;
+	margin-bottom: 14px;
+	padding: 14px;
+	display: flex;
+	border-radius: 48px;
+	.imgItems {
+		margin: 20px;
+	}
+	.details {
+		margin-left: 20px;
+	}
+}
