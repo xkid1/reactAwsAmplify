@@ -1,0 +1,7 @@
+type Task @model {
+	id: ID!
+	title: String!
+	img: String!
+	description: String
+	status: String
+}
