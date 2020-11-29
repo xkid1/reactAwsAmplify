@@ -1,38 +1,53 @@
 import React, { useState } from 'react';
-
+import { DataStore } from '@aws-amplify/datastore';
+import { Task } from '../models';
 const AddItems = () => {
-	const [state, setTodo] = useState({
-		todo: '',
-		todoList: [],
+	const [formState, updateFormState] = useState({
+		img: '',
+		title: '',
+		description: '',
 	});
 
-	const addItemHandle = (e) => {
+	const createMessage = async (e) => {
 		e.preventDefault();
-	};
-	const handleChange = (e) => {
-		// console.log(e.target.value);
-		setTodo(e.target.value);
+		if (!formState) return;
+		await DataStore.save(new Task({ ...formState }));
+		updateFormState(formState);
+		console.log(formState);
 	};
 	return (
 		<div className="container">
-			<form onSubmit={addItemHandle}>
-				{/* <div className="form-group">
+			<form onSubmit={createMessage}>
+				<div className="form-group">
 					<input
+						name="img"
 						type="file"
 						className="form-control-file"
-						onChange={handleChange}
+						onChange={(e) =>
+							updateFormState({ ...formState, img: e.target.files[0].name })
+						}
 					/>
-				</div> */}
-				<div className="form-group">
-					<input type="text" className="form-control" onChange={handleChange} />
 				</div>
-				{/* <div className="form-group">
+				<div className="form-group">
+					<input
+						type="text"
+						name="title"
+						className="form-control"
+						onChange={(e) =>
+							updateFormState({ ...formState, title: e.target.value })
+						}
+					/>
+				</div>
+				<div className="form-group">
 					<textarea
+						name="description"
 						className="form-control"
 						rows="3"
-						onChange={handleChange}
+						onChange={(e) =>
+							updateFormState({ ...formState, description: e.target.value })
+						}
 					></textarea>
-				</div> */}
+				</div>
 				<button type="submit" className="btn btn-primary">
 					Add
 				</button>

@@ -1,34 +1,44 @@
-import React from 'react';
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
-import { useSelector, useDispatch } from 'react-redux';
-import { setUserInfo } from '../redux/action/users';
-
+import React, { useState, useEffect } from 'react';
+import { DataStore } from '@aws-amplify/datastore';
+import { Task } from '../models';
 const BuyItemList = () => {
-	const users = useSelector((state) => state.users);
-	// const dispatch = useDispatch();
-	const handleClick = (e) => {
-		console.log(e);
+	const [messages, updateMessages] = useState([]);
+
+	useEffect(() => {
+		fetchMessages();
+		const subscription = DataStore.observe(Task).subscribe(() =>
+			fetchMessages(),
+		);
+		return () => subscription.unsubscribe();
+	}, []);
+
+	async function fetchMessages() {
+		const messages = await DataStore.query(Task);
+		updateMessages(messages);
+	}
+
+	const handleAddToChartClick = (e) => {
+		const newItem = [...messages];
+		const itemAddCart = newItem[e];
+		localStorage.setItem('items', JSON.stringify(itemAddCart));
 	};
-	const items = users.info;
-	console.log(items);
 
 	return (
 		<div className="container">
-			{items.map((item, index) => (
+			{messages.map((item, index) => (
 				<div
 					className="itemsToAdd"
 					key={index}
 					onClick={() => {
-						handleClick(index);
+						handleAddToChartClick(index);
 					}}
 				>
 					<div className="imgItems">
-						<img src="https://ui-avatars.com/api/?name=elmer" />
+						<img src={item.img} alt={item.title} />
 					</div>
 					<div className="details">
 						<h1>{item.title}</h1>
-						<p>{item.body}</p>
+						<p>{item.description}</p>
 					</div>
 				</div>
 			))}
@@ -36,20 +46,4 @@ const BuyItemList = () => {
 	);
 };
 
-// const mapStateProps = (state) => {
-// 	return {
-// 		users: state.users,
-// 	};
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-// 	return bindActionCreators(
-// 		{
-// 			setUserInfo,
-// 		},
-// 		dispatch,
-// 	);
-// };
-
-// export default connect(mapStateProps, mapDispatchToProps)(buyItemList);
 export default BuyItemList;
